@@ -8,5 +8,7 @@ var nextSequence = () => {
 }
 
 $(".btn").on('click', function(e){
+    var audio = new Audio(`./sounds/${e.target.id}.mp3`)
+    audio.play();
     $(`#${e.target.id}`).fadeOut(100).fadeIn(100);
 })
