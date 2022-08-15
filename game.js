@@ -26,14 +26,22 @@ var nextSequence = () => {
     var randomNumber = Math.floor(Math.random() * 4);
     var randomChosenColor = buttonColors[randomNumber];
     gamePattern.push(randomChosenColor);
-    playSound(randomChosenColor);
-    animatePress(randomChosenColor);
+    //this below replays all the colors in game pattern array @ 500ms intervals
+    var interval = 1;
+    gamePattern.forEach(function(el) {
+        var run = setTimeout(function() {
+            playSound(el);
+            animatePress(el);
+        }, 500 * interval);
+        interval++;
+    });
+    //this above replays all the colors in game pattern array @ 500ms intervals
+    console.log(gamePattern);
     level++;
     $(`#level-title`).text(`Level ${level}`);
 }
 
 var checkAnswer = (currentLevel) => {
-    console.log(`user: ${userClickedPattern}\ngame: ${gamePattern}\n${userClickedPattern[userClickedPattern.length]}\n${gamePattern[gamePattern.length]}`);
     if (userClickedPattern[userClickedPattern.length] === gamePattern[gamePattern.length]){
         if (userClickedPattern.join() == gamePattern.join()) {
             setTimeout(function() {
