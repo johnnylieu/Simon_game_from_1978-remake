@@ -10,14 +10,14 @@ var listenForKey = () => {
             nextSequence();
             gameStarted = true;
         }
-        });
-    $(document).click(function() {
-        if (gameStarted == false) {
-            nextSequence();
-            gameStarted = true;
-        }
-    });
-    }
+        })
+    // else $(document).click(function() {
+    //     if (gameStarted == false) {
+    //         nextSequence();
+    //         gameStarted = true;
+    //     }
+    // });
+    // }
 
 var animatePress = (currentColor) => {
     $(`#${currentColor}`).addClass('pressed').delay(100).removeClass('pressed');
