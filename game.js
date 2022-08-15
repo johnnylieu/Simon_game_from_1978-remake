@@ -17,7 +17,7 @@ var listenForKey = () => {
     //         gameStarted = true;
     //     }
     // });
-    // }
+    }
 
 var animatePress = (currentColor) => {
     $(`#${currentColor}`).addClass('pressed').delay(100).removeClass('pressed');
