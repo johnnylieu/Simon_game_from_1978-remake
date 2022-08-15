@@ -32,7 +32,6 @@ var nextSequence = () => {
         var run = setTimeout(function() {
             playSound(el);
             animatePress(el);
-
             clearTimeout(run);
         }, 500 * interval);
         interval++;
@@ -50,6 +49,13 @@ var checkAnswer = (currentLevel) => {
                 nextSequence();
                 userClickedPattern = [];
             }, 1000);
+        } else {
+            var audio = new Audio(`./sounds/wrong.mp3`);
+            audio.play();
+            $('body').addClass('game-over');
+            setTimeout(function() {
+                $('body').removeClass('game-over');
+            }, 200);
         }
     }
 }
