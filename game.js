@@ -33,12 +33,14 @@ var nextSequence = () => {
 }
 
 var checkAnswer = (currentLevel) => {
-    console.log(`user: ${userClickedPattern}\ngame: ${gamePattern}`);
-    if (userClickedPattern.join() == gamePattern.join()) {
-        setTimeout(function() {
-            nextSequence();
-            userClickedPattern = [];
-        }, 500);
+    console.log(`user: ${userClickedPattern}\ngame: ${gamePattern}\n${userClickedPattern[userClickedPattern.length]}\n${gamePattern[gamePattern.length]}`);
+    if (userClickedPattern[userClickedPattern.length] === gamePattern[gamePattern.length]){
+        if (userClickedPattern.join() == gamePattern.join()) {
+            setTimeout(function() {
+                nextSequence();
+                userClickedPattern = [];
+            }, 1000);
+        }
     }
 }
 
