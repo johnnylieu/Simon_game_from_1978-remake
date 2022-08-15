@@ -32,6 +32,8 @@ var nextSequence = () => {
         var run = setTimeout(function() {
             playSound(el);
             animatePress(el);
+
+            clearTimeout(run);
         }, 500 * interval);
         interval++;
     });
