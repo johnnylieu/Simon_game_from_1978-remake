@@ -51,7 +51,7 @@ var checkAnswer = (currentLevel) => {
                 }, 1000);
             } else for (i=0; i<userClickedPattern.length; i++) {
                 if (userClickedPattern[i] != gamePattern[i]) {
-                    $(`#level-title`).text(`Game Over, Press Any Key to Restart`);
+                    $(`#level-title`).text(`Game Over, You Reached Level ${level} - Press Any Key to Restart`);
                     gameStarted = false;
                     var audio = new Audio(`./sounds/wrong.mp3`);
                     audio.play();
