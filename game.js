@@ -4,13 +4,14 @@ var userClickedPattern = [];
 var level = 0;
 var gameStarted = false;
 
-$(document).keydown(function() {
-    if (gameStarted == false) {
-        nextSequence();
-        console.log('1');
-        gameStarted = true;
-    }
-})
+var listenForKey = () => {
+    $(document).keydown(function() {
+        if (gameStarted == false) {
+            nextSequence();
+            gameStarted = true;
+        }
+    })
+}
 
 var animatePress = (currentColor) => {
     $(`#${currentColor}`).addClass('pressed').delay(100).removeClass('pressed');
@@ -37,26 +38,29 @@ var nextSequence = () => {
         interval++;
     });
     //this above replays all the colors in game pattern array @ 500ms intervals
-    console.log(gamePattern);
     level++;
     $(`#level-title`).text(`Level ${level}`);
 }
 
 var checkAnswer = (currentLevel) => {
     if (userClickedPattern[userClickedPattern.length] === gamePattern[gamePattern.length]){
-        if (userClickedPattern.join() == gamePattern.join()) {
-            setTimeout(function() {
-                nextSequence();
-                userClickedPattern = [];
-            }, 1000);
-        } else {
-            var audio = new Audio(`./sounds/wrong.mp3`);
-            audio.play();
-            $('body').addClass('game-over');
-            setTimeout(function() {
-                $('body').removeClass('game-over');
-            }, 200);
-        }
+            if (userClickedPattern.join() == gamePattern.join()) {
+                setTimeout(function() {
+                    nextSequence();
+                    userClickedPattern = [];
+                }, 1000);
+            } else for (i=0; i<userClickedPattern.length; i++) {
+                if (userClickedPattern[i] != gamePattern[i]) {
+                    $(`#level-title`).text(`Game Over, Press Any Key to Restart`);
+                    gameStarted = false;
+                    var audio = new Audio(`./sounds/wrong.mp3`);
+                    audio.play();
+                    $('body').addClass('game-over');
+                    setTimeout(function() {
+                        $('body').removeClass('game-over');
+                    }, 200, userClickedPattern = [], listenForKey());
+                }
+        }; console.log(`game: ${gamePattern}\nuser: ${userClickedPattern}`);
     }
 }
 
@@ -66,3 +70,5 @@ $(".btn").on('click', function(e){
     userClickedPattern.push(userChosenColor);
     checkAnswer(userChosenColor);
 })
+
+listenForKey();
