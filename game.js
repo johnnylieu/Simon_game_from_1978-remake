@@ -59,12 +59,16 @@ var checkAnswer = (currentLevel) => {
                 if (userClickedPattern[i] != gamePattern[i]) {
                     $(`#level-title`).text(`Game Over, You Reached Level ${level} - Press Any Key to Restart`);
                     gameStarted = false;
+                    level = 0;
                     var audio = new Audio(`./sounds/wrong.mp3`);
                     audio.play();
+                    userClickedPattern = [];
+                    gamePattern = [];
+                    listenForKey();
                     $('body').addClass('game-over');
                     setTimeout(function() {
                         $('body').removeClass('game-over');
-                    }, 200, userClickedPattern = [], listenForKey());
+                    }, 200);
                 }
         }; console.log(`game: ${gamePattern}\nuser: ${userClickedPattern}`);
     }
