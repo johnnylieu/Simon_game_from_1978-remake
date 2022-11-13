@@ -57,9 +57,8 @@ var checkAnswer = (currentLevel) => {
                 }, 1000);
             } else for (i=0; i<userClickedPattern.length; i++) {
                 if (userClickedPattern[i] != gamePattern[i]) {
-                    $(`#level-title`).text(`Game Over, You Reached Level ${level} - Press Any Key to Restart`);
+                    $(`#level-title`).text(`Game Over, You Reached Level ${level} - Press Space Bar to Restart`);
                     gameStarted = false;
-                    level = 0;
                     var audio = new Audio(`./sounds/wrong.mp3`);
                     audio.play();
                     userClickedPattern = [];
@@ -68,12 +67,21 @@ var checkAnswer = (currentLevel) => {
                     $('body').addClass('game-over');
                     setTimeout(function() {
                         $('body').removeClass('game-over');
-                        highScoreName = prompt(`Enter your name for high score`);
-                        console.log(`${highScoreName} scored ${level}`);
+                        console.log(level);
+                        getUserName();
+                        level = 0;
+                        gameStarted = false;
                     }, 200);
                 };
         }; 
     };
+}
+
+var getUserName = () => {
+    if (level > 1){
+        highScoreName = prompt(`Enter your name for high score`);
+        console.log(`${highScoreName} scored ${level}`);
+    }
 }
 
 $(".btn").on('click', function(e){
