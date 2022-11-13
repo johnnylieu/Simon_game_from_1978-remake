@@ -68,10 +68,12 @@ var checkAnswer = (currentLevel) => {
                     $('body').addClass('game-over');
                     setTimeout(function() {
                         $('body').removeClass('game-over');
+                        highScoreName = prompt(`Enter your name for high score`);
+                        console.log(`${highScoreName} scored ${level}`);
                     }, 200);
-                }
-        }; console.log(`game: ${gamePattern}\nuser: ${userClickedPattern}`);
-    }
+                };
+        }; 
+    };
 }
 
 $(".btn").on('click', function(e){
