@@ -24,7 +24,7 @@ var animatePress = (currentColor) => {
 }
 
 var playSound = (name) => {
-    var audio = new Audio(`./sounds/${name}.mp3`)
+    var audio = new Audio(`sounds/${name}.mp3`)
     audio.play();
     $(`#${name}`).fadeOut(100).fadeIn(100);
 }
