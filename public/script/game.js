@@ -7,19 +7,19 @@ var gameStarted = false;
 document.getElementById('scoreName').style.display='none';
 
 var listenForKey = () => {
-    $(document).keydown(function() {
-        if (gameStarted == false) {
-            nextSequence();
-            gameStarted = true;
-        }
-        })
-    // else $(document).click(function() {
-    //     if (gameStarted == false) {
-    //         nextSequence();
-    //         gameStarted = true;
-    //     }
-    // });
+    $(document).keyup(function(e) {
+        if (e.key == " " ||
+      e.code == "Space" ||      
+      e.keyCode == 32      
+  ) {
+    if (gameStarted == false) {
+        document.getElementById('scoreName').style.display='none';
+        nextSequence();
+        gameStarted = true;
     }
+    }
+})
+};
 
 var animatePress = (currentColor) => {
     $(`#${currentColor}`).addClass('pressed').delay(100).removeClass('pressed');
@@ -65,7 +65,7 @@ var checkAnswer = (currentLevel) => {
                     audio.play();
                     userClickedPattern = [];
                     gamePattern = [];
-                    listenForKey();
+                    // listenForKey();
                     $('body').addClass('game-over');
                     setTimeout(function() {
                         $('body').removeClass('game-over');
@@ -73,19 +73,24 @@ var checkAnswer = (currentLevel) => {
                         // getUserName();
                         level = 0;
                         gameStarted = false;
-                    document.getElementById('scoreName').style.display='block';
+                        getUserName()
                     }, 200);
                 };
         }; 
     };
 }
 
-// var getUserName = () => {
-//     if (level > 1){
-//         highScoreName = prompt(`What's your name?`);
-//         console.log(`${highScoreName} scored ${level}`);
-//     }
-// }
+var getUserName = () => {
+    if (level > 1){
+        highScoreName = prompt(`What's your name?`);
+        console.log(`${highScoreName} scored ${level}`);
+    }
+    document.getElementById('scoreName').style.display='block';
+}
+
+var hidden = () => {
+    document.getElementById('scoreName').style.display='none';
+}
 
 $(".btn").on('click', function(e){
     var userChosenColor = e.target.id;

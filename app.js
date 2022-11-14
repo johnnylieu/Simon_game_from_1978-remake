@@ -25,6 +25,10 @@ app.get('/', function(req, res){
     res.render('index');
 });
 
+app.post('/score', function(req, res){
+    console.log(req.body.userScore);
+});
+
 app.listen(port, function() {
     console.log(`Server started on port ${port}`);
   });
