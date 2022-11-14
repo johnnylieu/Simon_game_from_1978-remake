@@ -4,6 +4,8 @@ var userClickedPattern = [];
 var level = 0;
 var gameStarted = false;
 
+document.getElementById('scoreName').style.display='none';
+
 var listenForKey = () => {
     $(document).keydown(function() {
         if (gameStarted == false) {
@@ -68,21 +70,22 @@ var checkAnswer = (currentLevel) => {
                     setTimeout(function() {
                         $('body').removeClass('game-over');
                         console.log(level);
-                        getUserName();
+                        // getUserName();
                         level = 0;
                         gameStarted = false;
+                    document.getElementById('scoreName').style.display='block';
                     }, 200);
                 };
         }; 
     };
 }
 
-var getUserName = () => {
-    if (level > 1){
-        highScoreName = prompt(`Enter your name for high score`);
-        console.log(`${highScoreName} scored ${level}`);
-    }
-}
+// var getUserName = () => {
+//     if (level > 1){
+//         highScoreName = prompt(`What's your name?`);
+//         console.log(`${highScoreName} scored ${level}`);
+//     }
+// }
 
 $(".btn").on('click', function(e){
     var userChosenColor = e.target.id;
