@@ -59,3 +59,43 @@ body {
   box-shadow: 0 0 20px white;
   background-color: grey;
 }
+
+#scoreName {
+  font-family: 'Press Start 2P', cursive;
+  color: #FEF2BF;
+  margin: 2% auto;
+}
+
+#scoreName input[type="text"] {
+  font-family: inherit;
+  padding: 10px;
+  margin: 0 10px;
+}
+
+#scoreName .btn-primary,
+#scoreForm input[type="submit"] {
+  font-family: inherit;
+  padding: 10px 16px;
+  cursor: pointer;
+}
+
+#leaderboard {
+  font-family: 'Press Start 2P', cursive;
+  color: #FEF2BF;
+  width: 50%;
+  margin: 3% auto;
+}
+
+#high-scores {
+  list-style: none;
+  padding: 0;
+  font-size: 0.8rem;
+  line-height: 2.2;
+}
+
+#high-scores li {
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px solid rgba(254, 242, 191, 0.25);
+  padding: 4px 8px;
+}

@@ -4,99 +4,196 @@ var userClickedPattern = [];
 var level = 0;
 var gameStarted = false;
 
-document.getElementById('scoreName').style.display='none';
+// Hide the "save your score" form until the game is over.
+$("#scoreName").hide();
 
-var listenForKey = () => {
-    $(document).keyup(function(e) {
-        if (e.key == " " ||
-      e.code == "Space" ||      
-      e.keyCode == 32      
-  ) {
-    if (gameStarted == false) {
-        document.getElementById('scoreName').style.display='none';
-        nextSequence();
-        gameStarted = true;
-    }
-    }
-})
-};
+function listenForKey() {
+    $(document).on("keyup", function (e) {
+        // Don't treat Space as "start" while the user is typing in a field
+        // (e.g. entering their name on the game-over screen).
+        var tag = (e.target.tagName || "").toLowerCase();
+        if (tag === "input" || tag === "textarea") return;
 
-var animatePress = (currentColor) => {
-    $(`#${currentColor}`).addClass('pressed').delay(100).removeClass('pressed');
+        if (e.key === " " || e.code === "Space" || e.keyCode === 32) {
+            if (!gameStarted) {
+                startGame();
+            }
+        }
+    });
 }
 
-var playSound = (name) => {
-    var audio = new Audio(`sounds/${name}.mp3`)
-    audio.play();
-    $(`#${name}`).fadeOut(100).fadeIn(100);
+function startGame() {
+    $("#scoreName").hide();
+    gamePattern = [];
+    userClickedPattern = [];
+    level = 0;
+    gameStarted = true;
+    nextSequence();
 }
 
-var nextSequence = () => {
+function animatePress(currentColor) {
+    $("#" + currentColor)
+        .addClass("pressed")
+        .delay(100)
+        .queue(function (next) {
+            $(this).removeClass("pressed");
+            next();
+        });
+}
+
+function playSound(name) {
+    var audio = new Audio("sounds/" + name + ".mp3");
+    audio.play().catch(function () {}); // ignore autoplay errors
+    $("#" + name)
+        .fadeOut(100)
+        .fadeIn(100);
+}
+
+function nextSequence() {
+    userClickedPattern = [];
+
     var randomNumber = Math.floor(Math.random() * 4);
     var randomChosenColor = buttonColors[randomNumber];
     gamePattern.push(randomChosenColor);
-    //this below replays all the colors in game pattern array @ 500ms intervals
-    var interval = 1;
-    gamePattern.forEach(function(el) {
-        var run = setTimeout(function() {
-            playSound(el);
-            animatePress(el);
-            clearTimeout(run);
-        }, 500 * interval);
-        interval++;
+
+    // Replay the whole pattern at 500ms intervals.
+    gamePattern.forEach(function (color, index) {
+        setTimeout(
+            function () {
+                playSound(color);
+                animatePress(color);
+            },
+            500 * (index + 1),
+        );
     });
-    //this above replays all the colors in game pattern array @ 500ms intervals
+
     level++;
-    $(`#level-title`).text(`Level ${level}`);
+    $("#level-title").text("Level " + level);
 }
 
-var checkAnswer = (currentLevel) => {
-    if (userClickedPattern[userClickedPattern.length] === gamePattern[gamePattern.length]){
-            if (userClickedPattern.join() == gamePattern.join()) {
-                setTimeout(function() {
-                    nextSequence();
-                    userClickedPattern = [];
-                }, 1000);
-            } else for (i=0; i<userClickedPattern.length; i++) {
-                if (userClickedPattern[i] != gamePattern[i]) {
-                    $(`#level-title`).text(`Game Over, You Reached Level ${level} - Press Space Bar to Restart`);
-                    gameStarted = false;
-                    var audio = new Audio(`./sounds/wrong.mp3`);
-                    audio.play();
-                    userClickedPattern = [];
-                    gamePattern = [];
-                    // listenForKey();
-                    $('body').addClass('game-over');
-                    setTimeout(function() {
-                        $('body').removeClass('game-over');
-                        console.log(level);
-                        // getUserName();
-                        level = 0;
-                        gameStarted = false;
-                        getUserName()
-                    }, 200);
-                };
-        }; 
-    };
-}
-
-var getUserName = () => {
-    if (level > 1){
-        highScoreName = prompt(`What's your name?`);
-        console.log(`${highScoreName} scored ${level}`);
+function checkAnswer(currentIndex) {
+    // Compare only the move the user just made (correct index — this was the bug).
+    if (userClickedPattern[currentIndex] === gamePattern[currentIndex]) {
+        // Right so far. If they've finished the full pattern, advance a level.
+        if (userClickedPattern.length === gamePattern.length) {
+            setTimeout(nextSequence, 1000);
+        }
+    } else {
+        gameOver();
     }
-    document.getElementById('scoreName').style.display='block';
 }
 
-var hidden = () => {
-    document.getElementById('scoreName').style.display='none';
+function gameOver() {
+    var reached = level;
+
+    $("#level-title").text(
+        "Game Over, You Reached Level " +
+            reached +
+            " - Press Space Bar to Restart",
+    );
+
+    var audio = new Audio("sounds/wrong.mp3");
+    audio.play().catch(function () {});
+
+    $("body").addClass("game-over");
+    setTimeout(function () {
+        $("body").removeClass("game-over");
+    }, 200);
+
+    gameStarted = false;
+    gamePattern = [];
+    userClickedPattern = [];
+
+    // Only bother saving a score if they actually got somewhere.
+    if (reached > 0) {
+        promptForName(reached);
+    }
+    level = 0;
 }
 
-$(".btn").on('click', function(e){
-    var userChosenColor = e.target.id;
-    playSound(userChosenColor);
+function promptForName(reached) {
+    $("#final-score").text(reached);
+    $("#scoreName").show();
+    $("#nameInput").val("").focus();
+}
+
+// Save the score to the server, then refresh the leaderboard.
+function submitScore(name, score) {
+    return fetch("/api/score", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name: name, score: score }),
+    })
+        .then(function (res) {
+            return res.json();
+        })
+        .then(function (scores) {
+            renderScores(scores);
+        })
+        .catch(function (err) {
+            console.error("Could not save score:", err);
+        });
+}
+
+function loadScores() {
+    fetch("/api/scores")
+        .then(function (res) {
+            return res.json();
+        })
+        .then(renderScores)
+        .catch(function () {});
+}
+
+function renderScores(scores) {
+    var list = $("#high-scores");
+    list.empty();
+    if (!scores || scores.length === 0) {
+        list.append("<li>No scores yet — be the first!</li>");
+        return;
+    }
+    scores.forEach(function (s) {
+        list.append(
+            "<li><span>" +
+                escapeHtml(s.name) +
+                "</span><span>" +
+                s.score +
+                "</span></li>",
+        );
+    });
+}
+
+function escapeHtml(str) {
+    return String(str).replace(/[&<>"']/g, function (c) {
+        return {
+            "&": "&amp;",
+            "<": "&lt;",
+            ">": "&gt;",
+            '"': "&quot;",
+            "'": "&#39;",
+        }[c];
+    });
+}
+
+// --- Event wiring ---
+
+$(".btn").on("click", function () {
+    if (!gameStarted) return;
+    var userChosenColor = this.id;
     userClickedPattern.push(userChosenColor);
-    checkAnswer(userChosenColor);
-})
+    playSound(userChosenColor);
+    animatePress(userChosenColor);
+    checkAnswer(userClickedPattern.length - 1);
+});
 
+$("#scoreForm").on("submit", function (e) {
+    e.preventDefault();
+    var name = $("#nameInput").val().trim() || "Anonymous";
+    var score = parseInt($("#final-score").text(), 10) || 0;
+    submitScore(name, score).then(function () {
+        $("#scoreName").hide();
+        $("#level-title").text("Press Space Bar Key to Start");
+    });
+});
+
+loadScores();
 listenForKey();
