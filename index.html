@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+  <meta charset="utf-8">
+  <title>Simon</title>
+  <!-- Relative paths so it works on GitHub Pages project subpaths -->
+  <link rel="stylesheet" href="public/css/styles.css">
+  <link href="https://fonts.googleapis.com/css?family=Press+Start+2P" rel="stylesheet">
+</head>
+
+<body>
+  <h1 id="level-title">Press Space Bar Key to Start</h1>
+
+  <div id="scoreName">
+    <p id="score-title">You reached level <span id="final-score">0</span>!</p>
+    <form id="scoreForm" name="score">
+      <label id="score-title" for="nameInput">Enter Your Name:</label>
+      <input type="text" id="nameInput" name="name" autocomplete="off" maxlength="24">
+      <input type="submit" value="Save Score" class="btn-primary">
+    </form>
+  </div>
+
+  <div class="container">
+    <div class="row">
+
+      <div type="button" id="green" class="btn green">
+
+      </div>
+
+      <div type="button" id="red" class="btn red">
+
+      </div>
+    </div>
+
+    <div class="row">
+
+      <div type="button" id="yellow" class="btn yellow">
+
+      </div>
+      <div type="button" id="blue" class="btn blue">
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <div id="leaderboard">
+    <h2 id="score-title">High Scores</h2>
+    <ol id="high-scores"></ol>
+  </div>
+
+  <script
+  src="https://code.jquery.com/jquery-3.6.0.js"
+  integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk="
+  crossorigin="anonymous"></script>
+  <script src="public/script/game.js"></script>
+</body>
+
+</html>

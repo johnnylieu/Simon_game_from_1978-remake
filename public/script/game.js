@@ -4,195 +4,182 @@ var userClickedPattern = [];
 var level = 0;
 var gameStarted = false;
 
+var STORAGE_KEY = "simonHighScores";
+
 // Hide the "save your score" form until the game is over.
 $("#scoreName").hide();
 
 function listenForKey() {
-    $(document).on("keyup", function (e) {
-        // Don't treat Space as "start" while the user is typing in a field
-        // (e.g. entering their name on the game-over screen).
-        var tag = (e.target.tagName || "").toLowerCase();
-        if (tag === "input" || tag === "textarea") return;
+  $(document).on("keyup", function (e) {
+    // Don't treat Space as "start" while the user is typing in a field
+    // (e.g. entering their name on the game-over screen).
+    var tag = (e.target.tagName || "").toLowerCase();
+    if (tag === "input" || tag === "textarea") return;
 
-        if (e.key === " " || e.code === "Space" || e.keyCode === 32) {
-            if (!gameStarted) {
-                startGame();
-            }
-        }
-    });
+    if (e.key === " " || e.code === "Space" || e.keyCode === 32) {
+      if (!gameStarted) {
+        startGame();
+      }
+    }
+  });
 }
 
 function startGame() {
-    $("#scoreName").hide();
-    gamePattern = [];
-    userClickedPattern = [];
-    level = 0;
-    gameStarted = true;
-    nextSequence();
+  $("#scoreName").hide();
+  gamePattern = [];
+  userClickedPattern = [];
+  level = 0;
+  gameStarted = true;
+  nextSequence();
 }
 
 function animatePress(currentColor) {
-    $("#" + currentColor)
-        .addClass("pressed")
-        .delay(100)
-        .queue(function (next) {
-            $(this).removeClass("pressed");
-            next();
-        });
+  $("#" + currentColor)
+    .addClass("pressed")
+    .delay(100)
+    .queue(function (next) {
+      $(this).removeClass("pressed");
+      next();
+    });
 }
 
 function playSound(name) {
-    var audio = new Audio("sounds/" + name + ".mp3");
-    audio.play().catch(function () {}); // ignore autoplay errors
-    $("#" + name)
-        .fadeOut(100)
-        .fadeIn(100);
+  var audio = new Audio("public/sounds/" + name + ".mp3");
+  audio.play().catch(function () {}); // ignore autoplay errors
+  $("#" + name).fadeOut(100).fadeIn(100);
 }
 
 function nextSequence() {
-    userClickedPattern = [];
+  userClickedPattern = [];
 
-    var randomNumber = Math.floor(Math.random() * 4);
-    var randomChosenColor = buttonColors[randomNumber];
-    gamePattern.push(randomChosenColor);
+  var randomNumber = Math.floor(Math.random() * 4);
+  var randomChosenColor = buttonColors[randomNumber];
+  gamePattern.push(randomChosenColor);
 
-    // Replay the whole pattern at 500ms intervals.
-    gamePattern.forEach(function (color, index) {
-        setTimeout(
-            function () {
-                playSound(color);
-                animatePress(color);
-            },
-            500 * (index + 1),
-        );
-    });
+  // Replay the whole pattern at 500ms intervals.
+  gamePattern.forEach(function (color, index) {
+    setTimeout(function () {
+      playSound(color);
+      animatePress(color);
+    }, 500 * (index + 1));
+  });
 
-    level++;
-    $("#level-title").text("Level " + level);
+  level++;
+  $("#level-title").text("Level " + level);
 }
 
 function checkAnswer(currentIndex) {
-    // Compare only the move the user just made (correct index — this was the bug).
-    if (userClickedPattern[currentIndex] === gamePattern[currentIndex]) {
-        // Right so far. If they've finished the full pattern, advance a level.
-        if (userClickedPattern.length === gamePattern.length) {
-            setTimeout(nextSequence, 1000);
-        }
-    } else {
-        gameOver();
+  // Compare only the move the user just made (correct index).
+  if (userClickedPattern[currentIndex] === gamePattern[currentIndex]) {
+    // Right so far. If they've finished the full pattern, advance a level.
+    if (userClickedPattern.length === gamePattern.length) {
+      setTimeout(nextSequence, 1000);
     }
+  } else {
+    gameOver();
+  }
 }
 
 function gameOver() {
-    var reached = level;
+  var reached = level;
 
-    $("#level-title").text(
-        "Game Over, You Reached Level " +
-            reached +
-            " - Press Space Bar to Restart",
-    );
+  $("#level-title").text(
+    "Game Over, You Reached Level " + reached + " - Press Space Bar to Restart"
+  );
 
-    var audio = new Audio("sounds/wrong.mp3");
-    audio.play().catch(function () {});
+  var audio = new Audio("public/sounds/wrong.mp3");
+  audio.play().catch(function () {});
 
-    $("body").addClass("game-over");
-    setTimeout(function () {
-        $("body").removeClass("game-over");
-    }, 200);
+  $("body").addClass("game-over");
+  setTimeout(function () {
+    $("body").removeClass("game-over");
+  }, 200);
 
-    gameStarted = false;
-    gamePattern = [];
-    userClickedPattern = [];
+  gameStarted = false;
+  gamePattern = [];
+  userClickedPattern = [];
 
-    // Only bother saving a score if they actually got somewhere.
-    if (reached > 0) {
-        promptForName(reached);
-    }
-    level = 0;
+  if (reached > 0) {
+    promptForName(reached);
+  }
+  level = 0;
 }
 
 function promptForName(reached) {
-    $("#final-score").text(reached);
-    $("#scoreName").show();
-    $("#nameInput").val("").focus();
+  $("#final-score").text(reached);
+  $("#scoreName").show();
+  $("#nameInput").val("").focus();
 }
 
-// Save the score to the server, then refresh the leaderboard.
-function submitScore(name, score) {
-    return fetch("/api/score", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name: name, score: score }),
-    })
-        .then(function (res) {
-            return res.json();
-        })
-        .then(function (scores) {
-            renderScores(scores);
-        })
-        .catch(function (err) {
-            console.error("Could not save score:", err);
-        });
+// ---- High scores stored in the browser (localStorage) ----
+
+function getScores() {
+  try {
+    var raw = localStorage.getItem(STORAGE_KEY);
+    return raw ? JSON.parse(raw) : [];
+  } catch (err) {
+    return [];
+  }
+}
+
+function saveScore(name, score) {
+  var scores = getScores();
+  scores.push({ name: name, score: score, date: new Date().toISOString() });
+  scores.sort(function (a, b) {
+    return b.score - a.score || new Date(a.date) - new Date(b.date);
+  });
+  scores = scores.slice(0, 10); // keep top 10
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(scores));
+  } catch (err) {
+    // localStorage may be unavailable (private mode); just skip saving.
+  }
+  return scores;
 }
 
 function loadScores() {
-    fetch("/api/scores")
-        .then(function (res) {
-            return res.json();
-        })
-        .then(renderScores)
-        .catch(function () {});
+  renderScores(getScores());
 }
 
 function renderScores(scores) {
-    var list = $("#high-scores");
-    list.empty();
-    if (!scores || scores.length === 0) {
-        list.append("<li>No scores yet — be the first!</li>");
-        return;
-    }
-    scores.forEach(function (s) {
-        list.append(
-            "<li><span>" +
-                escapeHtml(s.name) +
-                "</span><span>" +
-                s.score +
-                "</span></li>",
-        );
-    });
+  var list = $("#high-scores");
+  list.empty();
+  if (!scores || scores.length === 0) {
+    list.append("<li>No scores yet — be the first!</li>");
+    return;
+  }
+  scores.forEach(function (s) {
+    list.append(
+      "<li><span>" + escapeHtml(s.name) + "</span><span>" + s.score + "</span></li>"
+    );
+  });
 }
 
 function escapeHtml(str) {
-    return String(str).replace(/[&<>"']/g, function (c) {
-        return {
-            "&": "&amp;",
-            "<": "&lt;",
-            ">": "&gt;",
-            '"': "&quot;",
-            "'": "&#39;",
-        }[c];
-    });
+  return String(str).replace(/[&<>"']/g, function (c) {
+    return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+  });
 }
 
 // --- Event wiring ---
 
 $(".btn").on("click", function () {
-    if (!gameStarted) return;
-    var userChosenColor = this.id;
-    userClickedPattern.push(userChosenColor);
-    playSound(userChosenColor);
-    animatePress(userChosenColor);
-    checkAnswer(userClickedPattern.length - 1);
+  if (!gameStarted) return;
+  var userChosenColor = this.id;
+  userClickedPattern.push(userChosenColor);
+  playSound(userChosenColor);
+  animatePress(userChosenColor);
+  checkAnswer(userClickedPattern.length - 1);
 });
 
 $("#scoreForm").on("submit", function (e) {
-    e.preventDefault();
-    var name = $("#nameInput").val().trim() || "Anonymous";
-    var score = parseInt($("#final-score").text(), 10) || 0;
-    submitScore(name, score).then(function () {
-        $("#scoreName").hide();
-        $("#level-title").text("Press Space Bar Key to Start");
-    });
+  e.preventDefault();
+  var name = $("#nameInput").val().trim() || "Anonymous";
+  var score = parseInt($("#final-score").text(), 10) || 0;
+  var scores = saveScore(name, score);
+  renderScores(scores);
+  $("#scoreName").hide();
+  $("#level-title").text("Press Space Bar Key to Start");
 });
 
 loadScores();
