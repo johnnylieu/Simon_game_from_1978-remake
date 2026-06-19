@@ -76,7 +76,7 @@ function gameOver() {
     $("#level-title").text(
         "Game Over, You Reached Level " +
             reached +
-            " - Press Space Bar to Restart",
+            " - Press Space Bar or Tap (movbile) to Restart",
     );
     var audio = new Audio("public/sounds/wrong.mp3");
     audio.play().catch(function () {});
@@ -145,4 +145,7 @@ $("#scoreForm").on("submit", function (e) {
     $("#level-title").text("Press Space Bar Key to Start");
 });
 
+$("#level-title").on("click", function () {
+    if (!gameStarted) startGame();
+});
 listenForKey();

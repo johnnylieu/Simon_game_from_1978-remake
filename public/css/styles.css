@@ -1,101 +1,101 @@
 body {
-  text-align: center;
-  background-color: #011F3F;
+    text-align: center;
+    background-color: #011f3f;
 }
 
 #level-title {
-  font-family: 'Press Start 2P', cursive;
-  font-size: 3rem;
-  margin:  5%;
-  color: #FEF2BF;
+    font-family: "Press Start 2P", cursive;
+    font-size: 3rem;
+    margin: 5%;
+    color: #fef2bf;
 }
 
 #score-title {
-  font-family: 'Press Start 2P', cursive;
-  font-size: 1rem;
-  /* margin:  5%; */
-  color: #FEF2BF;
-  align-items: center;
+    cursor: pointer;
+    font-family: "Press Start 2P", cursive;
+    font-size: 1rem;
+    /* margin:  5%; */
+    color: #fef2bf;
+    align-items: center;
 }
 
 .container {
-  display: block;
-  width: 50%;
-  margin: auto;
-
+    display: block;
+    width: 50%;
+    margin: auto;
 }
 
 .btn {
-  margin: 25px;
-  display: inline-block;
-  height: 200px;
-  width: 200px;
-  border: 10px solid black;
-  border-radius: 20%;
+    margin: 25px;
+    display: inline-block;
+    height: 200px;
+    width: 200px;
+    border: 10px solid black;
+    border-radius: 20%;
 }
 
 .game-over {
-  background-color: red;
-  opacity: 0.8;
+    background-color: red;
+    opacity: 0.8;
 }
 
 .red {
-  background-color: red;
+    background-color: red;
 }
 
 .green {
-  background-color: green;
+    background-color: green;
 }
 
 .blue {
-  background-color: blue;
+    background-color: blue;
 }
 
 .yellow {
-  background-color: yellow;
+    background-color: yellow;
 }
 
 .pressed {
-  box-shadow: 0 0 20px white;
-  background-color: grey;
+    box-shadow: 0 0 20px white;
+    background-color: grey;
 }
 
 #scoreName {
-  font-family: 'Press Start 2P', cursive;
-  color: #FEF2BF;
-  margin: 2% auto;
+    font-family: "Press Start 2P", cursive;
+    color: #fef2bf;
+    margin: 2% auto;
 }
 
 #scoreName input[type="text"] {
-  font-family: inherit;
-  padding: 10px;
-  margin: 0 10px;
+    font-family: inherit;
+    padding: 10px;
+    margin: 0 10px;
 }
 
 #scoreName .btn-primary,
 #scoreForm input[type="submit"] {
-  font-family: inherit;
-  padding: 10px 16px;
-  cursor: pointer;
+    font-family: inherit;
+    padding: 10px 16px;
+    cursor: pointer;
 }
 
 #leaderboard {
-  font-family: 'Press Start 2P', cursive;
-  color: #FEF2BF;
-  width: 50%;
-  margin: 3% auto;
+    font-family: "Press Start 2P", cursive;
+    color: #fef2bf;
+    width: 50%;
+    margin: 3% auto;
 }
 
 #high-scores {
-  list-style: none;
-  padding: 0;
-  font-size: 0.8rem;
-  line-height: 2.2;
+    list-style: none;
+    padding: 0;
+    font-size: 0.8rem;
+    line-height: 2.2;
 }
 
 #high-scores li {
-  display: flex;
-  justify-content: space-between;
-  border-bottom: 1px solid rgba(254, 242, 191, 0.25);
-  padding: 4px 8px;
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px solid rgba(254, 242, 191, 0.25);
+    padding: 4px 8px;
 }
