@@ -25,16 +25,19 @@ are stored in **Firebase Firestore**. There is no server to run.
 - `public/script/game.js` — game logic + score rendering
 - `public/sounds/*.mp3` — button sounds
 
-## Run it locally
+## Running locally
 
-The page uses ES modules, which browsers won't load from a `file://` path —
-so don't just double-click `index.html`. Serve it over http with any of:
+⚠️ Do NOT use `npm start`. That runs the old Express server (`app.js`) on
+localhost:3000, which serves an outdated page with no Firebase — so the high
+scores won't show. Those Node files are legacy and unused by the live site.
 
-- **VS Code:** install the "Live Server" extension → right-click `index.html` → _Open with Live Server_
-- **Node:** `npx serve` (then open the URL it prints)
-- **Python:** `python3 -m http.server` → open http://localhost:8000
+This is a static site. Serve `index.html` over http instead:
 
-Firestore works fine from `localhost`.
+- VS Code: right-click `index.html` → "Open with Live Server", or
+- run `npx serve` in the project folder
+
+Don't open `index.html` as a `file://` path either — the Firebase module
+won't load that way.
 
 ## High scores (Firebase Firestore)
 
