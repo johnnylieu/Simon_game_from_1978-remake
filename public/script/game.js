@@ -104,9 +104,11 @@ function renderScores(scores) {
         list.append("<li>No scores yet — be the first!</li>");
         return;
     }
-    scores.forEach(function (s) {
+    scores.forEach(function (s, i) {
         list.append(
             "<li><span>" +
+                (i + 1) +
+                ". " +
                 escapeHtml(s.name) +
                 "</span><span>" +
                 s.score +
