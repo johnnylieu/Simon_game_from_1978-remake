@@ -73,11 +73,7 @@ function checkAnswer(currentIndex) {
 
 function gameOver() {
     var reached = level;
-    $("#level-title").text(
-        "Game Over, You Reached Level " +
-            reached +
-            " - Press Space Bar or Tap (movbile) to Restart",
-    );
+    $("#level-title").text("Game Over, You Reached Level " + reached);
     var audio = new Audio("public/sounds/wrong.mp3");
     audio.play().catch(function () {});
     $("body").addClass("game-over");
