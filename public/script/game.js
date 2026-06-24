@@ -38,6 +38,7 @@ function animatePress(currentColor) {
 
 function playSound(name) {
     var audio = new Audio("public/sounds/" + name + ".mp3");
+    audio.volume = 0.3;
     audio.play().catch(function () {});
     $("#" + name)
         .fadeOut(100)
@@ -76,6 +77,7 @@ function gameOver() {
     var reached = level;
     $("#level-title").text("Game Over, You Reached Level " + reached);
     var audio = new Audio("public/sounds/wrong.mp3");
+    audio.volume = 0.3;
     audio.play().catch(function () {});
     $("body").addClass("game-over");
     setTimeout(function () {
