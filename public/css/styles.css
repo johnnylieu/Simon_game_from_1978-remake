@@ -130,4 +130,5 @@ body {
 #high-scores li.top-score {
     animation: top-score-glow 3s linear infinite;
     font-weight: bold;
+    font-size: 1.3rem;
 }
