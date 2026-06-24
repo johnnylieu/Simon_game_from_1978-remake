@@ -99,3 +99,35 @@ body {
     border-bottom: 1px solid rgba(254, 242, 191, 0.25);
     padding: 4px 8px;
 }
+
+@keyframes top-score-glow {
+    0% {
+        color: #ff5d5d;
+        text-shadow: 0 0 8px #ff5d5d;
+    }
+    20% {
+        color: #ffd93d;
+        text-shadow: 0 0 8px #ffd93d;
+    }
+    40% {
+        color: #6bff6b;
+        text-shadow: 0 0 8px #6bff6b;
+    }
+    60% {
+        color: #4dd2ff;
+        text-shadow: 0 0 8px #4dd2ff;
+    }
+    80% {
+        color: #c77dff;
+        text-shadow: 0 0 8px #c77dff;
+    }
+    100% {
+        color: #ff5d5d;
+        text-shadow: 0 0 8px #ff5d5d;
+    }
+}
+
+#high-scores li.top-score {
+    animation: top-score-glow 3s linear infinite;
+    font-weight: bold;
+}

@@ -101,8 +101,11 @@ function renderScores(scores) {
         return;
     }
     scores.forEach(function (s, i) {
+        var topClass = i === 0 ? ' class="top-score"' : "";
         list.append(
-            "<li><span>" +
+            "<li" +
+                topClass +
+                "><span>" +
                 (i + 1) +
                 ". " +
                 escapeHtml(s.name) +
