@@ -7,10 +7,11 @@ var gameStarted = false;
 $("#scoreName").hide();
 
 function listenForKey() {
-    $(document).on("keyup", function (e) {
+    $(document).on("keydown", function (e) {
         var tag = (e.target.tagName || "").toLowerCase();
         if (tag === "input" || tag === "textarea") return;
         if (e.key === " " || e.code === "Space" || e.keyCode === 32) {
+            e.preventDefault(); // stops the page from scrolling
             if (!gameStarted) startGame();
         }
     });
